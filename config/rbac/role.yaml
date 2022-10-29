@@ -1,0 +1,59 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - actors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - actors/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - actors/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - runtimes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - runtimes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - runtimes/status
+  verbs:
+  - get
+  - patch
+  - update

@@ -1,0 +1,27 @@
+# permissions for end users to view runtimes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: runtime-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: kruntime
+    app.kubernetes.io/part-of: kruntime
+    app.kubernetes.io/managed-by: kustomize
+  name: runtime-viewer-role
+rules:
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - runtimes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - runtimes/status
+  verbs:
+  - get

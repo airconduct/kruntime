@@ -1,0 +1,25 @@
+domain: airconduct.io
+layout:
+- go.kubebuilder.io/v4-alpha
+projectName: kruntime
+repo: github.com/airconduct/kruntime
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: airconduct.io
+  group: runtime
+  kind: Runtime
+  path: github.com/airconduct/kruntime/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: airconduct.io
+  group: runtime
+  kind: Actor
+  path: github.com/airconduct/kruntime/api/v1alpha1
+  version: v1alpha1
+version: "3"
