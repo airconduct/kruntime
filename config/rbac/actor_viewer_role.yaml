@@ -1,0 +1,27 @@
+# permissions for end users to view actors.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: actor-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: kruntime
+    app.kubernetes.io/part-of: kruntime
+    app.kubernetes.io/managed-by: kustomize
+  name: actor-viewer-role
+rules:
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - actors
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - runtime.airconduct.io
+  resources:
+  - actors/status
+  verbs:
+  - get
