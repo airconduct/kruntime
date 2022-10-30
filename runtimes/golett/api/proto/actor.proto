@@ -1,0 +1,29 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "github.com/airconduct/kruntime/runtimes/golett/api/proto";
+
+message PID {
+    string uuid = 1;
+    string name = 2;
+    string binary_source = 3;
+    string host = 4;
+    string endpoint = 5;
+}
+
+enum DataFormat {
+    UNKNOWN = 0;
+    JSON = 1;
+}
+
+message RemoteMessage {
+    bytes body = 1;
+    map<string, string> header = 2;
+    PID from = 3;
+    PID to = 4;
+    DataFormat format = 5;
+}
+
+service Actor {
+    rpc Call(RemoteMessage) returns (RemoteMessage);
+}
