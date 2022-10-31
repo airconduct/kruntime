@@ -18,14 +18,18 @@ import (
 func TestGolet(t *testing.T) {
 	s := grpc.NewServer()
 
-	pb.RegisterGoletServer(s, service.New())
+	gs := service.New()
+	pb.RegisterGoletServer(s, gs)
 
 	lis, err := serverListener_unix()
 	if err != nil {
 		t.Fatal(err)
 	}
 	go s.Serve(lis)
-	defer s.Stop()
+	defer func() {
+		gs.Shutdown()
+		s.Stop()
+	}()
 
 	cc, err := grpc.Dial(fmt.Sprintf("%s:%s", lis.Addr().Network(), lis.Addr().String()), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
