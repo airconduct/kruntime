@@ -18,7 +18,7 @@ import (
 	kplugin "github.com/airconduct/kruntime/runtimes/golett/internal/plugin"
 )
 
-func New() pb.GoletServer {
+func New() *GoletService {
 	return &GoletService{
 		plugins: make(map[string]*plugin.Client),
 		actors:  make(map[string]pb.ActorClient),
@@ -130,6 +130,21 @@ func (s *GoletService) List(ctx context.Context, in *pb.ListRequest) (out *pb.Li
 		out.Pids = append(out.Pids, proto.Clone(s.pids[i]).(*pb.PID))
 	}
 	return
+}
+
+func (s *GoletService) Shutdown() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	wg := sync.WaitGroup{}
+	wg.Add(len(s.plugins))
+	for k := range s.plugins {
+		go func(client *plugin.Client) {
+			defer wg.Done()
+			client.Kill()
+		}(s.plugins[k])
+	}
+	wg.Wait()
 }
 
 // func isExectuable(mode os.FileMode) bool {
