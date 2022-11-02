@@ -31,14 +31,20 @@ func TestGolet(t *testing.T) {
 		s.Stop()
 	}()
 
-	cc, err := grpc.Dial(fmt.Sprintf("%s:%s", lis.Addr().Network(), lis.Addr().String()), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.Dial(fmt.Sprintf("%s://%s", lis.Addr().Network(), lis.Addr().String()), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	client := pb.NewGoletClient(cc)
 
-	resp, err := client.Load(context.Background(), &pb.LoadRequest{
+	_, err = client.Load(context.Background(), &pb.LoadRequest{
+		Name: "foo", Path: "../plugin/test/test",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = client.Load(context.Background(), &pb.LoadRequest{
 		Name: "foo", Path: "../plugin/test/test",
 	})
 	if err != nil {
@@ -47,7 +53,7 @@ func TestGolet(t *testing.T) {
 
 	task := &testapi.Task{Num: 10}
 	out, err := client.Invoke(context.Background(), &pb.RemoteMessage{
-		To:     resp.Pid,
+		To:     &pb.PID{Name: "foo"},
 		Format: pb.DataFormat_JSON,
 		Body:   task.Unmarshal(),
 	})
