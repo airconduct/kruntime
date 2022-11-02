@@ -8,6 +8,8 @@ import (
 	"testing"
 
 	plugin "github.com/hashicorp/go-plugin"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	pb "github.com/airconduct/kruntime/runtimes/golett/api/proto"
 	kplugin "github.com/airconduct/kruntime/runtimes/golett/internal/plugin"
@@ -28,16 +30,27 @@ func TestPlugin(t *testing.T) {
 		AllowedProtocols: []plugin.Protocol{
 			plugin.ProtocolNetRPC, plugin.ProtocolGRPC},
 	})
-	rpcClient, err := client.Client()
+	_, err := client.Start()
+	if err != nil {
+		t.Fatal(err)
+	}
+	addr := client.ReattachConfig().Addr
+	// rpcClient, err := client.Client()
+	// if err != nil {
+	// 	t.Error(err)
+	// }
+	// raw, err := rpcClient.Dispense("actor")
+	// if err != nil {
+	// 	t.Error(err)
+	// }
+	target := fmt.Sprintf("%s://%s", addr.Network(), addr.String())
+	cc, err := grpc.Dial(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Error(err)
 	}
-	raw, err := rpcClient.Dispense("actor")
-	if err != nil {
-		t.Error(err)
-	}
-	actor := raw.(pb.ActorClient)
-	payload := testapi.Task{Num: 2}
+	actor := pb.NewActorClient(cc)
+	// actor := raw.(pb.ActorClient)
+	payload := testapi.Task{Num: 4}
 	body, _ := json.Marshal(payload)
 	resp, err := actor.Call(context.Background(), &pb.RemoteMessage{
 		Body:   body,

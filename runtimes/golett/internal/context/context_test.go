@@ -10,8 +10,8 @@ import (
 
 func TestContext(t *testing.T) {
 	ctx := kcontext.WithRemote(context.Background(), &pb.RemoteMessage{
-		From:   &pb.PID{Name: "test", Uuid: "1"},
-		To:     &pb.PID{Name: "test", Uuid: "2"},
+		From:   &pb.PID{Name: "test", Id: "1"},
+		To:     &pb.PID{Name: "test", Id: "2"},
 		Body:   []byte("{\"test\":1}"),
 		Format: pb.DataFormat_JSON,
 	})
